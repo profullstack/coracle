@@ -12,7 +12,8 @@
     "check:fmt": "prettier --check $(git diff head --name-only --diff-filter d | grep -E 'js|ts|svelte$' | xargs)",
     "check": "run-p check:*",
     "format": "prettier --write $(git diff head --name-only --diff-filter d | grep -E 'js|ts|svelte$' | xargs)",
-    "watch": "find src -type f | entr -r"
+    "watch": "find src -type f | entr -r",
+    "deploy": "./bin/deploy.sh"
   },
   "devDependencies": {
     "@capacitor/cli": "^4.7.3",
