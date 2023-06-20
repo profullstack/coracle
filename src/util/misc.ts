@@ -48,6 +48,10 @@ export const setLocalJson = (k, v) => {
 
 export const now = () => Math.round(new Date().valueOf() / 1000)
 
+export const getTimeZone = () => new Date().toString().match(/GMT[^\s]+/)
+
+export const createLocalDate = dateString => new Date(`${dateString} ${getTimeZone()}`)
+
 export const timedelta = (n, unit = "seconds") => {
   switch (unit) {
     case "seconds":
@@ -219,7 +223,7 @@ export const defer = (): Deferred<any> => {
   return Object.assign(p, {resolve, reject})
 }
 
-export const avg = xs => sum(xs) / xs.length
+export const avg = xs => (xs.length > 0 ? sum(xs) / xs.length : 0)
 
 // https://stackoverflow.com/a/21682946
 export const stringToHue = value => {
@@ -355,9 +359,9 @@ export class EventBus {
 }
 
 export const annotateMedia = url => {
-  if (url.match(".(jpg|jpeg|png|gif)")) {
+  if (url.match(/\.(jpg|jpeg|png|gif)/)) {
     return {type: "image", url}
-  } else if (url.match(".(mov|mp4)")) {
+  } else if (url.match(/\.(mov|mp4)/)) {
     return {type: "video", url}
   } else {
     return {type: "preview", url}

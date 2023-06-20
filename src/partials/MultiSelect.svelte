@@ -59,7 +59,7 @@
 
 <div class="text-sm">
   {#each value as item}
-    <Chip class="mr-1 mb-1" theme="dark" on:click={() => remove(item)}>
+    <Chip class="mr-1 mb-1" theme="dark" onClick={() => remove(item)}>
       <slot name="item" {item}>
         {item}
       </slot>
@@ -69,7 +69,7 @@
 
 <input
   type="text"
-  class="shadow-inset w-full cursor-text rounded border border-solid border-gray-3 bg-input bg-input py-2
+  class="shadow-inset w-full cursor-text rounded-full border border-solid border-gray-3 bg-input bg-input py-2
          py-2 px-4 text-black outline-0 placeholder:text-gray-5"
   {placeholder}
   bind:value={term}

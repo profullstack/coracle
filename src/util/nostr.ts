@@ -2,7 +2,7 @@ import type {DisplayEvent} from "src/util/types"
 import {is, fromPairs, mergeLeft, last, identity, objOf, prop, flatten, uniq} from "ramda"
 import {nip19} from "nostr-tools"
 import {ensurePlural, ellipsize, first} from "hurdak/lib/hurdak"
-import {tryJson} from "src/util/misc"
+import {tryJson, avg} from "src/util/misc"
 import {invoiceAmount} from "src/util/lightning"
 
 export const personKinds = [0, 2, 3, 10001, 10002]
@@ -59,6 +59,9 @@ export class Tags {
   }
   filter(f) {
     return new Tags(this.tags.filter(f))
+  }
+  reject(f) {
+    return new Tags(this.tags.filter(t => !f(t)))
   }
   any(f) {
     return this.filter(f).exists()
@@ -262,12 +265,16 @@ export const parseContent = ({content, tags = []}) => {
     }
   }
 
+  const parseLNUrl = () => {
+    const lnurl = first(text.match(/^ln(bc|url)[\d\w]{50,1000}/i))
+
+    if (lnurl) {
+      return ["lnurl", lnurl, lnurl]
+    }
+  }
+
   const parseUrl = () => {
-    const raw = first(
-      text.match(
-        /^((http|ws)s?:\/\/)?[-a-z0-9:%_\+~#@,=\.\*\(\)]+\.[a-z]{1,6}[-a-z0-9:%_\+~#\?&\/=;#@,\.\(\)]*/gi
-      )
-    )
+    const raw = first(text.match(/^([a-z\+:]{2,30}:\/\/)?[^\s]+\.[a-z]{2,6}[^\s]*[^\.!?,:\s]/gi))
 
     // Skip url if it's just the end of a filepath
     if (raw) {
@@ -280,23 +287,26 @@ export const parseContent = ({content, tags = []}) => {
       let url = raw
 
       // Skip ellipses and very short non-urls
-      if (!url.match(/\.\./) && url.length > 4) {
-        // It's common for punctuation to end a url, trim it off
-        if (url.match(/[\.\?,:]$/)) {
-          url = url.slice(0, -1)
-        }
-
-        if (!url.match("://")) {
-          url = "https://" + url
-        }
-
-        return ["link", raw, url]
+      if (url.match(/\.\./)) {
+        return
       }
+
+      if (!url.match("://")) {
+        url = "https://" + url
+      }
+
+      return ["link", raw, url]
     }
   }
 
   while (text) {
-    const part = parseNewline() || parseMention() || parseTopic() || parseBech32() || parseUrl()
+    const part =
+      parseNewline() ||
+      parseMention() ||
+      parseTopic() ||
+      parseBech32() ||
+      parseUrl() ||
+      parseLNUrl()
 
     if (part) {
       if (buffer) {
@@ -370,3 +380,9 @@ export const processZaps = (zaps, author) =>
 export const fromNostrURI = s => s.replace(/^[\w\+]+:\/?\/?/, "")
 
 export const toNostrURI = s => `web+nostr://${s}`
+
+export const getLabelQuality = (label, event) =>
+  tryJson(() => JSON.parse(last(Tags.from(event).type("l").equals(label).first())).quality)
+
+export const getAvgQuality = (label, events) =>
+  avg(events.map(e => getLabelQuality(label, e)).filter(identity))

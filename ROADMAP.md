@@ -1,12 +1,9 @@
 # Current
 
-- [ ] List detail pages with follow all and add all to list
+- [ ] Feeds load forever if a modal is open
+- [ ] Support other list types
 - [ ] Use vida to stream development
 - [ ] Fix connection management stuff. Have GPT help
-- [ ] Relay reviews
-  - New kind, d as url? Combine with labeling?
-  - Show reviews in relay detail rather than events. Warn about events tab
-  - Add curated relay list, and an easy way to view content on the relays
 - [ ] Add preview proxy thing
 - [ ] White-labeled
   - [ ] Add invite code registration for relay
@@ -17,13 +14,22 @@
   - [ ] Avoid leaking events from private relays
 - [ ] Image classification
   - https://github.com/bhky/opennsfw2
-- [ ] Private groups using nsec bunker
-- [ ] Fix unauthenticated experience. Going to an npub just spins
+- [ ] Private groups
+- [ ] Convert app store to nip 89
+- [ ] Put search icon in header or hover button, open in modal
+- [ ] Hide muted quoted events
+- [ ] Centralize relays
+  - This is ok, relays are the source of decentralization
+  - clients can help with discoverability
+  - Add agent to dufflepud database that scrapes relays and reviews
+  - Serve relays from dufflepud
+  - Or maybe set up a special purpose relay for relay recs?
 
 # Core
 
+- [ ] Deploy ontology.coracle.social
+- [ ] List detail pages with follow all and add all to list
 - [ ] Add threads - replies by self get shown at the top of replies?
-- [ ] Show link previews when posting
 - [ ] Embedded music players for Spotify, youtube, etc
 - [ ] Make mutes private
 - [ ] Add nostrscript nevent1qqsvetmqsk8025jadyn82cpmkgxcesjffqajssd2qaq0k8arw9v79tsppadk7cn2v43hggz0vf4x2cm5t5yt4dnl
@@ -71,6 +77,10 @@
 - [ ] NIP 39 Support https://github.com/nostr-protocol/nips/pull/201/files
 - [ ] Integrate plephy https://plebhy.com/
 - [ ] Add support for website kind0
+- [ ] Schedule notes for x seconds in the future with a queue
+  - In the queue, add send now and cancel buttons
+  - maybe put all user events here too - keep track of what relays they were published to
+  - Add un-delete using event log
 
 # UI/Features
 

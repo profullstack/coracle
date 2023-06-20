@@ -14,6 +14,7 @@
   import Modal from "src/partials/Modal.svelte"
   import Heading from "src/partials/Heading.svelte"
   import RelayCard from "src/app/shared/RelayCard.svelte"
+  import NoteContent from "src/app/shared/NoteContent.svelte"
   import RelaySearch from "src/app/shared/RelaySearch.svelte"
   import {getUserWriteRelays, getRelayForPersonHint} from "src/agent/relays"
   import {getPersonWithFallback} from "src/agent/db"
@@ -29,6 +30,7 @@
   let q = ""
   let image = null
   let compose = null
+  let showPreview = false
   let showSettings = false
   let relays = writable(
     (writeTo ? writeTo.map(url => ({url, score: 1})) : getUserWriteRelays()) as Array<{
@@ -94,6 +96,10 @@
     relays.update(reject(propEq("url", relay.url)))
   }
 
+  const togglePreview = () => {
+    showPreview = !showPreview
+  }
+
   onMount(() => {
     if (pubkey && pubkey !== user.getPubkey()) {
       compose.mention(getPersonWithFallback(pubkey))
@@ -113,13 +119,26 @@
     <div class="flex w-full flex-col gap-4">
       <div class="flex flex-col gap-2">
         <strong>What do you want to say?</strong>
-        <div class="border-l-2 border-solid border-gray-6 pl-4">
-          <Compose bind:this={compose} {onSubmit} />
-          <div class="flex justify-end">
-            <small class="text-gray-5">
-              Posting as @{displayPerson(getPersonWithFallback(user.getPubkey()))}
-            </small>
+        <div
+          class="mt-4 rounded-xl border border-solid border-gray-6 p-3"
+          class:bg-input={!showPreview}
+          class:text-black={!showPreview}
+          class:bg-gray-7={showPreview}>
+          {#if showPreview}
+            <NoteContent note={{content: compose.parse(), tags: []}} />
+          {/if}
+          <div class:hidden={showPreview}>
+            <Compose bind:this={compose} {onSubmit} />
           </div>
+        </div>
+        <div class="flex items-center justify-end gap-2 text-gray-5">
+          <small>
+            Posting as @{displayPerson(getPersonWithFallback(user.getPubkey()))}
+          </small>
+          <span>•</span>
+          <small on:click={togglePreview} class="cursor-pointer underline">
+            {showPreview ? "Hide" : "Show"} Preview
+          </small>
         </div>
       </div>
       {#if image}

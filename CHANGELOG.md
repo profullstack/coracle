@@ -1,5 +1,20 @@
 # Changelog
 
+# 0.2.32
+
+- [x] Add note preview when composing
+- [x] Merge advanced search, feed options, and lists
+- [x] Fix loading lists on login
+- [x] Improve anonymous user UX
+
+# 0.2.31
+
+- [x] Add the ability to view and write reviews on relays, with ratings
+- [x] Add support for parsing and displaying lnurl invoices
+- [x] Add advanced search to feeds with a summary of the filter applied
+- [x] Improve url parsing
+- [x] Reduce threshold for fuzzy search
+
 # 0.2.30
 
 - [x] Prefer followed users when mentioning people
